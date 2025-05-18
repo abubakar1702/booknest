@@ -1,0 +1,15 @@
+{% block content %}
+
+{% for list in lists %}
+
+<h1>{{list.name}}</h1>
+
+{% for userBook in list.books.all %}
+
+<li>{{userBook.book.name}}</li>
+
+{% endfor %}
+
+{% endfor %}
+
+{% endblock content %}

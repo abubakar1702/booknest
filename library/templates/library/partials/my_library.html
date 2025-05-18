@@ -1,0 +1,101 @@
+{% block content %}
+<div class="row mt-5 g-4">
+    <!-- Main Content Column -->
+    <div class="col-lg-8">
+        <!-- Currently Reading Section -->
+        <section class="bg-white rounded shadow-sm border p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold text-dark">
+                    Currently Reading <span class="text-muted fs-6">({{ currently_reading_count }})</span>
+                </h2>
+                {% if currently_reading %}
+                <a href="#" class="text-decoration-none text-primary small">View all</a>
+                {% endif %}
+            </div>
+
+            {% if currently_reading %}
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3">
+                    {% for books in currently_reading %}
+                        {% include "library/partials/currently_reading.html" %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="bg-light p-5 text-center rounded border">
+                    <i class="fas fa-book-open text-muted fs-1"></i>
+                    <h3 class="mt-3 h6 fw-semibold text-dark">No books in progress</h3>
+                    <p class="text-muted mb-3">Start reading to track your progress here.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Your Library Section -->
+        <section class="bg-white rounded shadow-sm p-4 border mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold text-dark">
+                    Your Library <span class="text-muted fs-6">({{ total_books }})</span>
+                </h2>
+                <div class="btn-group">
+                    <button class="btn btn-light"><i class="fas fa-bookmark text-muted"></i></button>
+                    <button class="btn btn-light"><i class="fas fa-bars text-muted"></i></button>
+                </div>
+            </div>
+
+            {% if books %}
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+                    {% for user_book in books %}
+                        {% include "library/partials/book_item.html" %}
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button class="btn btn-outline-secondary btn-sm">Load More</button>
+                </div>
+            {% else %}
+                <div class="bg-light p-5 text-center rounded border">
+                    <i class="fas fa-book text-muted fs-1"></i>
+                    <h3 class="mt-3 h6 fw-semibold text-dark">Your library is empty</h3>
+                    <p class="text-muted mb-3">Add books to start building your collection.</p>
+                    <a href="{% url 'user_lists' %}" class="btn btn-primary btn-sm">Browse Books</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <!-- Sidebar Column -->
+    <div class="col-lg-4">
+        <!-- Your Lists Section -->
+        <section class="bg-white rounded shadow-sm p-4 border">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 fw-bold text-dark">
+                    Your Lists <span class="text-muted fs-6">({{ total_lists }})</span>
+                </h2>
+                <a href="{% url 'create_list' %}" class="btn btn-primary btn-sm d-flex align-items-center">
+                    <i class="fas fa-plus me-1"></i> New List
+                </a>
+            </div>
+
+            {% if user_lists %}
+                <div class="vstack gap-3">
+                    {% for list in user_lists %}
+                        <div>{% include "library/partials/list_items.html" %}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-3">
+                    <a href="#" class="text-decoration-none text-primary small">View all lists</a>
+                </div>
+            {% else %}
+                <div class="bg-light p-4 text-center rounded border">
+                    <i class="fas fa-list-ul text-muted fs-2"></i>
+                    <h3 class="mt-3 h6 fw-semibold text-dark">No lists yet</h3>
+                    <p class="text-muted mb-2 small">Create lists to organize your books.</p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Reading Goals Section -->
+        {% include "library/partials/reading_goals.html" %}
+
+    </div>
+</div>
+{% endblock %}

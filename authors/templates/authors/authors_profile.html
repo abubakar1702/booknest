@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Author Image (Sticky and Fixed Size) -->
+<div class="col-md-4 text-center">
+  <div style="top: 20px;">
+    <div class="mx-auto" style="width: 220px; height: 300px; overflow: hidden;">
+      {% if author.image %}
+        <img src="{{ author.image.url }}" alt="{{ author.name }}"
+             class="img-fluid rounded shadow"
+             style="width: 100%; height: 100%; object-fit: cover;">
+      {% else %}
+        <img src="{% static 'images/default-author.jpg' %}" alt="No image"
+             class="img-fluid rounded shadow"
+             style="width: 100%; height: 100%; object-fit: cover;">
+      {% endif %}
+    </div>
+
+    <!-- Follow Button -->
+    <button class="btn btn-outline-primary rounded-pill mt-3 px-4">
+      <i class="bi bi-person-plus me-1"></i> Follow
+    </button>
+  </div>
+</div>
+
+
+    <!-- Author Info (Flexible Height, Not Scrollable) -->
+    <div class="col-md-8">
+      <h1 class="fw-bold">{{ author.name }}
+        {% if author.is_varified %}
+          <span class="text-success small ms-2" title="Verified">
+            <i class="bi bi-patch-check-fill"></i>
+          </span>
+        {% endif %}
+      </h1>
+      <p class="text-muted">{{ author.birth_place }}</p>
+
+      <p><strong>Born:</strong> {{ author.date_of_birth|date:"F j, Y" }}</p>
+      {% if author.date_of_death %}
+        <p><strong>Died:</strong> {{ author.date_of_death|date:"F j, Y" }}</p>
+      {% endif %}
+
+      {% if author.website %}
+        <p><strong>Website:</strong> <a href="{{ author.website }}" target="_blank">{{ author.website }}</a></p>
+      {% endif %}
+
+      {% if author.genres.all %}
+        <p><strong>Genres:</strong>
+          {% for genre in author.genres.all %}
+            <span class="badge bg-secondary me-1">{{ genre.name }}</span>
+          {% endfor %}
+        </p>
+      {% endif %}
+
+      {% if author.bio %}
+<hr>
+<h5 class="fw-semibold">Biography</h5>
+
+<div x-data="{ expanded: false }" class="mb-4">
+  <div
+    class="text-muted transition-all"
+    :style="expanded ? '' : 'max-height: 150px; overflow: hidden;'"
+  >
+    <p class="mb-0" style="white-space: pre-line;">{{ author.bio }}</p>
+  </div>
+  <button
+    type="button"
+    @click="expanded = !expanded"
+    class="btn btn-sm btn-link px-0 mt-2 text-decoration-none"
+    x-text="expanded ? 'See Less' : 'See More'"
+  ></button>
+</div>
+{% endif %}
+
+    </div>
+  </div>
+
+  <!-- Books by Author Section -->
+  {% include "authors/books_by_author.html" %}
+</div>
+{% endblock %}

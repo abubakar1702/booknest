@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-light py-5">
+  <div class="container text-center">
+    <h1 class="display-4 fw-bold text-dark mb-4">
+      Welcome to <span class="text-primary">Booknest</span>
+    </h1>
+    <p class="lead text-secondary mb-4">
+      Your personal book management system – discover, organize, and track your reading journey.
+    </p>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="" class="btn btn-primary btn-lg shadow">
+        Browse Books
+      </a>
+      <a href="" class="btn btn-outline-secondary btn-lg shadow">
+        My Library
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">Features You'll Love</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="text-center p-4 bg-light rounded shadow-sm h-100">
+          <i class="fas fa-book-open text-primary fs-1 mb-3"></i>
+          <h3 class="h5 fw-semibold mb-2">Browse Thousands of Books</h3>
+          <p class="text-muted">Search and explore a vast collection of books from different genres and authors.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="text-center p-4 bg-light rounded shadow-sm h-100">
+          <i class="fas fa-layer-group text-primary fs-1 mb-3"></i>
+          <h3 class="h5 fw-semibold mb-2">Build Your Library</h3>
+          <p class="text-muted">Create your own personal library and track the books you've read or want to read.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="text-center p-4 bg-light rounded shadow-sm h-100">
+          <i class="fas fa-users text-primary fs-1 mb-3"></i>
+          <h3 class="h5 fw-semibold mb-2">Join the Community</h3>
+          <p class="text-muted">Connect with other readers, share reviews, and get recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

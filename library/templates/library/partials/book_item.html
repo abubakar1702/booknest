@@ -1,0 +1,53 @@
+<a href="{% url 'book_details' user_book.book.id %}" class="text-decoration-none text-dark d-block h-100">
+    <div class="card h-100 border shadow-sm hover-shadow transition position-relative">
+      
+      <!-- Status Indicator -->
+      {% if user_book.status %}
+      <div class="position-absolute top-0 end-0 m-2 z-1">
+        <span class="badge 
+          {% if user_book.status == 'read' %}bg-success bg-opacity-60 text-white
+          {% elif user_book.status == 'reading' %}bg-warning bg-opacity-60 text-white
+          {% else %}bg-primary bg-opacity-60 text-white{% endif %}">
+          <i class="fas 
+            {% if user_book.status == 'read' %}fa-check-circle
+            {% elif user_book.status == 'reading' %}fa-book-open
+            {% else %}fa-bookmark{% endif %} me-1"></i>
+          {{ user_book.get_status_display }}
+        </span>
+      </div>
+      {% endif %}
+  
+      <!-- Cover -->
+      <div class="d-flex align-items-center justify-content-center bg-light border-bottom" style="height: 12rem; overflow: hidden;">
+        {% if user_book.book.cover %}
+          <img src="{{ user_book.book.cover.url }}" alt="{{ user_book.book.name }}" class="img-fluid h-100 object-fit-contain transition">
+        {% else %}
+          <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-secondary bg-opacity-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="text-muted" viewBox="0 0 24 24">
+              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+  
+      <!-- Book Info -->
+      <div class="card-body d-flex flex-column p-2">
+        <h6 class="card-title text-truncate mb-1">{{ user_book.book.name }}</h6>
+  
+        <div class="mt-auto">
+          {% if user_book.book.authors.all %}
+            <p class="card-subtitle text-muted small text-truncate">
+              {% for author in user_book.book.authors.all|slice:":2" %}
+                {{ author.name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+              {% if user_book.book.authors.count > 2 %}
+                +{{ user_book.book.authors.count|add:"-2" }}
+              {% endif %}
+            </p>
+          {% endif %}
+          <p class="text-muted small mt-1">Added {{ user_book.created_at|date:"M Y" }}</p>
+        </div>
+      </div>
+    </div>
+  </a>
+  

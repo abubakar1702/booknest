@@ -1,0 +1,145 @@
+<section class="bg-white rounded shadow-sm mt-4 p-4 border">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 fw-bold text-dark">Reading Goals</h2>
+    <button id="edit-goals-btn" class="btn btn-link text-decoration-none text-primary p-0">Edit</button>
+  </div>
+  
+<!-- Display Mode -->
+<div id="goals-display">
+  {% if goal_data %}
+    {% for goal in goal_data %}
+      <div class="mb-4">
+        <div class="d-flex justify-content-between">
+          <span class="text-muted small fw-medium">{{ goal.name }} Goal</span>
+          <span class="text-muted small fw-medium">{{ goal.completed }}/{{ goal.total }}</span>
+        </div>
+        <div class="progress" style="height: 8px;">
+          <div class="progress-bar {% if goal.type == 'Monthly' %}bg-success{% else %}bg-primary{% endif %}" style="width: {{ goal.percentage }}%;"></div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="alert alert-info">
+      You haven't set any reading goals yet.
+    </div>
+  {% endif %}
+</div>
+
+
+  
+  <!-- Edit Mode (Hidden by default) -->
+  <div id="goals-edit" style="display: none;">
+    <form id="goals-form">
+      <div id="goals-form-container">
+        <div class="mb-3 goal-edit-item">
+          <div class="d-flex align-items-center mb-2">
+            <select name="duration_1" class="form-select form-select-sm me-2" style="width: 120px;">
+              <option value="monthly" selected>Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+            <input type="number" name="goal_count_1" value="10" 
+                   class="form-control form-control-sm" style="width: 80px;" min="1">
+            <button type="button" class="btn btn-sm btn-outline-danger ms-2 delete-goal">Delete</button>
+          </div>
+          <select name="month_1" class="form-select form-select-sm" style="width: 120px;">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5" selected>May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <div class="mb-3 goal-edit-item">
+          <div class="d-flex align-items-center mb-2">
+            <select name="duration_2" class="form-select form-select-sm me-2" style="width: 120px;">
+              <option value="monthly">Monthly</option>
+              <option value="yearly" selected>Yearly</option>
+            </select>
+            <input type="number" name="goal_count_2" value="50" 
+                   class="form-control form-control-sm" style="width: 80px;" min="1">
+            <button type="button" class="btn btn-sm btn-outline-danger ms-2 delete-goal">Delete</button>
+          </div>
+          <select name="month_2" class="form-select form-select-sm monthly-field" style="width: 120px; display: none;">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="d-flex justify-content-between mt-3">
+        <div></div> <!-- Empty div to maintain flex layout -->
+        <div>
+          <button type="button" id="cancel-edit" class="btn btn-sm btn-outline-secondary me-2">Cancel</button>
+          <button type="submit" class="btn btn-sm btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const editBtn = document.getElementById('edit-goals-btn');
+  const displayDiv = document.getElementById('goals-display');
+  const editDiv = document.getElementById('goals-edit');
+  const cancelBtn = document.getElementById('cancel-edit');
+  const formContainer = document.getElementById('goals-form-container');
+
+  // Toggle edit mode
+  editBtn.addEventListener('click', function() {
+    displayDiv.style.display = 'none';
+    editDiv.style.display = 'block';
+  });
+
+  cancelBtn.addEventListener('click', function() {
+    displayDiv.style.display = 'block';
+    editDiv.style.display = 'none';
+  });
+
+  // Delete goal
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('delete-goal')) {
+      const goalItem = e.target.closest('.goal-edit-item');
+      if (goalItem) {
+        goalItem.remove();
+      }
+    }
+  });
+
+  // Toggle month field based on duration
+  document.addEventListener('change', function(e) {
+    if (e.target.name && e.target.name.startsWith('duration_')) {
+      const goalItem = e.target.closest('.goal-edit-item');
+      const monthField = goalItem.querySelector('select[name^="month_"]');
+      if (monthField) {
+        monthField.style.display = e.target.value === 'monthly' ? 'block' : 'none';
+      }
+    }
+  });
+
+  // Handle form submission (just for demo)
+  document.getElementById('goals-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Goals would be saved here in a real application');
+    displayDiv.style.display = 'block';
+    editDiv.style.display = 'none';
+  });
+});
+</script>

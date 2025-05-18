@@ -1,0 +1,78 @@
+<div class="my-5 px-3 px-md-4">
+  <h3 class="h4 fw-semibold text-dark mb-4">Reviews ({{ book.reviews.count }})</h3>
+  {% with text_reviews=book.reviews.all %}
+  {% if text_reviews %}
+    <div id="review-container">
+      <div class="row g-4" id="review-cards">
+        {% for review in text_reviews %}
+          {% if review.text %}
+            <div class="col-12 col-md-6 col-lg-4 review-card" data-index="{{ forloop.counter }}">
+              <div class="bg-white border rounded shadow-sm p-3 h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="fw-medium">{{ review.user.username }}</span>
+                  <div class="text-warning">
+                    {% for i in "12345" %}
+                      {% if forloop.counter <= review.rating %}★{% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+                <div>
+                  <p class="text-muted small review-text" style="max-height: 6em; overflow: hidden;" data-full="{{ review.text|escapejs }}">
+                    {{ review.text }}
+                  </p>
+                  {% if review.text|length > 200 %}
+                    <button class="btn btn-link p-0 mt-1 text-primary text-decoration-none see-more-btn" data-expanded="false">
+                      See More
+                    </button>
+                  {% endif %}
+                </div>
+                <p class="text-muted mt-auto small mb-0">{{ review.created_at|date:"M d, Y" }}</p>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if text_reviews|length > 3 %}
+        <div class="text-center mt-4">
+          <button id="toggle-reviews-btn" class="btn btn-outline-primary rounded-pill px-4">
+            See All Reviews
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="bg-light p-5 text-center rounded border">
+      <p class="text-muted mb-2">No reviews yet</p>
+      <a href="#" class="text-primary text-decoration-none fw-medium">Be the first to review</a>
+    </div>
+  {% endif %}
+  {% endwith %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const seeMoreButtons = document.querySelectorAll('.see-more-btn');
+
+    seeMoreButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const reviewTextElem = button.previousElementSibling;
+        const isExpanded = button.getAttribute('data-expanded') === 'true';
+
+        if (isExpanded) {
+          // Collapse the text
+          reviewTextElem.style.maxHeight = '6em';
+          reviewTextElem.style.overflow = 'hidden';
+          button.textContent = 'See More';
+          button.setAttribute('data-expanded', 'false');
+        } else {
+          // Expand the text fully
+          reviewTextElem.style.maxHeight = 'none';
+          reviewTextElem.style.overflow = 'visible';
+          button.textContent = 'See Less';
+          button.setAttribute('data-expanded', 'true');
+        }
+      });
+    });
+  });
+</script>

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+
+        <!-- Book Cover Section -->
+        <div class="col-md-5 text-center border-end">
+            <div class="mb-3">
+                {% if book.cover %}
+                <img src="{{ book.cover.url }}" alt="{{ book.name }} cover" class="img-fluid rounded w-50 shadow-sm"/>
+                {% else %}
+                <img src="{% static 'images/default-book.jpg' %}" alt="Default book cover"
+                     class="img-fluid rounded w-50 shadow-sm"/>
+                {% endif %}
+            </div>
+
+            <!-- Add to Library Button -->
+            {% if request.user.is_authenticated %}
+            <div class="d-flex justify-content-center">
+                <div class="mt-3 w-50" x-data="{ showDropdown: false }">
+                    <form method="post" action="{% url 'update_book_status' book.id %}" id="library-form">
+                        {% csrf_token %}
+
+                        {% if userbook_status == "Add to Library" %}
+                        <!-- One-click add -->
+                        <button
+                                type="submit"
+                                name="status"
+                                value="added"
+                                class="btn btn-primary rounded-pill px-4 w-100 shadow-sm"
+                        >
+                            Add to Library
+                        </button>
+                        {% else %}
+                        <!-- Status button with dropdown -->
+                        <div class="btn-group w-100">
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-start-pill px-4 w-75"
+                            >
+                                {{ userbook_status|capfirst }}
+                            </button>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-end-pill dropdown-toggle dropdown-toggle-split"
+                                    @click="showDropdown = !showDropdown"
+                            ></button>
+                        </div>
+
+                        <div
+                                class="dropdown-menu w-40 mt-2 shadow-sm border show"
+                                x-show="showDropdown"
+                                @click.outside="showDropdown = false"
+                                x-transition
+                        >
+                            <button class="dropdown-item" type="submit" name="status" value="added"
+                                    @click="showDropdown = false">
+                                In Library
+                            </button>
+                            <button class="dropdown-item" type="submit" name="status" value="reading"
+                                    @click="showDropdown = false">
+                                Currently Reading
+                            </button>
+                            <button class="dropdown-item" type="submit" name="status" value="read"
+                                    @click="showDropdown = false">
+                                Read
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item text-danger" type="submit" name="status" value="REMOVE"
+                                    @click="showDropdown = false">
+                                <i class="bi bi-trash me-2"></i>Remove from Library
+                            </button>
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="d-flex justify-content-center mt-3 w-50 mx-auto">
+                <a href="{% url 'login' %}?next={{ request.path }}"
+                   class="btn btn-outline-primary rounded-pill px-4 w-100 shadow-sm">
+                    Sign in to Add
+                </a>
+            </div>
+            {% endif %}
+
+
+        </div>
+
+        <!-- Book Info Section -->
+        <div class="col-md-7">
+            <div class="d-flex flex-column gap-3">
+                <h1 class="h2 fw-bold text-dark">{{ book.name }}</h1>
+
+                <!-- Author & Rating -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                    {% if book.authors.all %}
+                    <p class="text-muted mb-0">
+                        by
+                        {% for author in book.authors.all %}
+                        <a href="{% url 'authors_profile' author.id %}"
+                           class="fw-medium text-decoration-none text-primary">{{ author.name }}</a>
+                        {% if not forloop.last %}{% if forloop.revcounter == 2 %} & {% else %}, {% endif %}{% endif %}
+                        {% endfor %}
+                    </p>
+                    {% else %}
+                    <p class="text-muted">Author unknown</p>
+                    {% endif %}
+
+                    {% if book.reviews.count > 0 %}
+                    <div class="bg-light rounded-pill px-3 py-1 d-flex align-items-center">
+                        <div class="me-2">
+                            {% with avg_rating=book.average_rating %}
+                            {% for i in "12345" %}
+                            {% if forloop.counter <= avg_rating %}
+                            <span class="text-warning">★</span>
+                            {% else %}
+                            <span class="text-secondary">★</span>
+                            {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <small class="text-dark fw-semibold">
+                            {{ book.average_rating|floatformat:1 }} ({{ book.reviews.count }})
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Quick Facts -->
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3 h-100 shadow-sm">
+                            <small class="text-muted d-block">ISBN</small>
+                            <div class="fw-monospace">{{ book.isbn|default:"Not available" }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3 h-100 shadow-sm">
+                            <small class="text-muted d-block">First Published</small>
+                            <div>{{ book.first_published|date:"Y" }}</div>
+                        </div>
+                    </div>
+                    {% if book.languages.all %}
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3 h-100 shadow-sm">
+                            <small class="text-muted d-block">Language</small>
+                            <div>
+                                {% for language in book.languages.all %}
+                                {{ language.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-6">
+                        <div class="bg-light rounded p-3 h-100 shadow-sm">
+                            <small class="text-muted d-block">Pages</small>
+                            <div>{{ book.pages|default:"-" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                {% if book.description %}
+                <div x-data="{ expanded: false }">
+                    <div
+                            class="text-muted transition-all duration-300"
+                            :class="expanded ? '' : 'line-clamp-3'"
+                    >
+                        {{ book.description|linebreaks }}
+                    </div>
+                    <button
+                            type="button"
+                            @click="expanded = !expanded"
+                            class="btn btn-link p-0 mt-2 text-primary text-decoration-none"
+                            x-text="expanded ? 'See Less' : 'See More'"
+                    ></button>
+                </div>
+                {% endif %}
+
+                <!-- Genres -->
+                {% if book.genres.all %}
+                <div>
+                    <h5 class="fw-semibold mt-4">Genres</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for genre in book.genres.all %}
+                        <span class="badge bg-light border border-secondary text-dark px-3 py-2">{{ genre.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Awards -->
+                {% if book.awards.all %}
+                <div>
+                    <h5 class="fw-semibold mt-4">Awards</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for award in book.awards.all %}
+                        <span class="badge bg-primary text-white px-3 py-2">{{ award.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    {% include "books/partials/write_a_review.html" %}
+
+    <!-- Reviews Section -->
+    {% include "books/partials/book_reviews.html" %}
+</div>
+
+<!-- Alpine.js -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+{% endblock %}

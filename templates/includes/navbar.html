@@ -1,0 +1,84 @@
+<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand fw-semibold text-secondary" href="">Booknest</a>
+
+    <!-- Always visible icons on the right (even in mobile) -->
+    <div class="d-flex align-items-center px-4 ms-auto order-md-2">
+
+      <!-- Notification Icon -->
+      <a class="nav-link text-secondary me-3" href="#"><i class="fas fa-bell"></i></a>
+
+      {% if user.is_authenticated %}
+        <!-- Desktop: Full dropdown -->
+        <div class="dropdown d-none d-md-block">
+          <a class="nav-link dropdown-toggle text-secondary d-flex align-items-center" href="#" id="userDropdownDesktop"
+            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user me-2"></i>{{ user.first_name }} {{ user.last_name }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdownDesktop">
+            <li><a class="dropdown-item" href="#">Dashboard</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">My Library</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form action="{% url 'logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Sign out</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mobile: Icon with dropdown -->
+        <div class="dropdown d-md-none">
+          <a class="nav-link dropdown-toggle text-secondary" href="#" id="userDropdownMobile"
+             role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdownMobile">
+            <li><a class="dropdown-item" href="#">Dashboard</a></li>
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">My Library</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form action="" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Sign out</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+        {% else %}
+        <!-- Unauthenticated: Login & Signup Buttons -->
+        <a class="btn btn-outline-primary rounded-pill me-2 px-4" href="{% url 'login' %}">Login</a>
+        <a class="btn btn-primary rounded-pill px-4" href="{% url 'signup' %}">Signup</a>
+      {% endif %}
+      
+    </div>
+
+    <!-- Mobile toggle -->
+    <button class="navbar-toggler order-md-3" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible menu -->
+    <div class="collapse navbar-collapse order-md-1" id="mainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        <li class="nav-item">
+          <a class="nav-link text-secondary" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-secondary" href="{% url 'all_books' %}">Books</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-secondary" href="{% url 'user_library' %}">Library</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-secondary" href="">Community</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

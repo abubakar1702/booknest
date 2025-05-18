@@ -1,0 +1,99 @@
+{% load static %}
+<div class="mb-4 py-4">
+    <h3 class="h3 text-center fw-bold mb-4">
+      Books by {{ author.name }}
+    </h3>
+    <div class="row gx-3 gy-4">
+      {% for book in author_books %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+        <a href="{% url 'book_details' book.id %}" class="text-decoration-none text-reset d-block h-100">
+          <div class="card h-100 shadow-sm border rounded overflow-hidden hover-shadow">
+            <!-- Book Cover Image -->
+            <div class="ratio ratio-1x1 bg-light d-flex align-items-center justify-content-center border-bottom">
+              {% if book.cover %}
+              <img
+                src="{{ book.cover.url }}"
+                alt="{{ book.name }}"
+                class="img-fluid object-fit-contain transition-transform hover-scale"
+              />
+              {% else %}
+              <img
+                src="{% static 'images/default-book.jpg' %}"
+                alt="{{ book.name }}"
+                class="img-fluid opacity-75 object-fit-contain transition-opacity hover-opacity"
+              />
+              {% endif %}
+            </div>
+  
+            <!-- Book Details -->
+            <div class="card-body d-flex flex-column p-2">
+              <h4 class="card-title fs-6 text-truncate" title="{{ book.name }}">
+                {{ book.name }}
+              </h4>
+  
+              <!-- Rating Display -->
+              <div class="mb-1">
+                {% if book.reviews.count > 0 %}
+                <div class="d-flex align-items-center">
+                  <div class="d-flex me-2">
+                    {% with avg_rating=book.average_rating %}
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= avg_rating %}
+                    <span class="text-warning">★</span>
+                    {% else %}
+                    <span class="text-muted">★</span>
+                    {% endif %}
+                    {% endfor %}
+                    {% endwith %}
+                  </div>
+                  <span class="small text-muted">({{ book.reviews.count }})</span>
+                </div>
+                <div class="small text-muted">
+                  {{ book.average_rating|floatformat:1 }} out of 5
+                </div>
+                {% else %}
+                <div class="small fst-italic text-muted">No ratings yet</div>
+                {% endif %}
+              </div>
+  
+              <!-- Authors (simplified since we're on author profile) -->
+              <div class="small text-muted mt-auto">
+                {% if book.first_published %}
+                <p class="mb-0">
+                  {{ book.first_published|date:"Y" }}
+                </p>
+                {% else %}
+                <p class="fst-italic mb-0">Year unknown</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <div class="alert alert-info">
+          No books listed for {{ author.name }} yet.
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    .hover-scale:hover {
+      transform: scale(1.05);
+    }
+    .hover-opacity:hover {
+      opacity: 0.9;
+    }
+    .transition-transform {
+      transition: transform 0.3s ease;
+    }
+    .transition-opacity {
+      transition: opacity 0.3s ease;
+    }
+</style>

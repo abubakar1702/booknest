@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container py-3">
+  <div class="row g-2">
+    {% for book in books %}
+    <div class="col-4 col-sm-3 col-md-2 col-lg-2 col-xl-2">
+      <div class="card h-100 border-0">
+        <a href="{% url 'book_details' book.id %}" class="text-decoration-none">
+          {% if book.cover %}
+          <img src="{{ book.cover.url }}" class="card-img-top p-1" alt="{{ book.name }}" style="height: 120px; object-fit: contain; width: 100%;">
+          {% else %}
+          <img src="{% static 'images/default-book.jpg' %}" class="card-img-top p-1 opacity-75" alt="No cover" style="height: 120px; object-fit: contain; width: 100%;">
+          {% endif %}
+          <div class="card-body p-1 text-center">
+            <h6 class="card-title mb-0 text-truncate small" style="font-size: 0.8rem;" title="{{ book.name }}">{{ book.name }}</h6>
+            <p class="text-muted mb-0 small text-truncate" style="font-size: 0.7rem;">
+              {% if book.authors.all %}
+                {% for author in book.authors.all %}
+                  {{ author.name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+              {% else %}
+                Unknown
+              {% endif %}
+            </p>
+            <div class="mt-1">
+              {% if book.reviews.count > 0 %}
+                <span class="badge bg-warning text-dark small" style="font-size: 0.65rem;">
+                  {{ book.average_rating|floatformat:1 }} ★ ({{ book.reviews.count }})
+                </span>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-muted small">No books available.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

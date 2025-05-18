@@ -1,0 +1,96 @@
+{% if request.user.is_authenticated %}
+<div 
+  x-data="{
+    status: '{{ user_book_status|default:"" }}',
+    showDropdown: '{{ user_book_status|default:"" }}' !== '',
+    message: '',
+    showMessage: false,
+
+    async addToLibrary() {
+      try {
+        const response = await fetch('{% url "add_to_library" book.id %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}',
+          }
+        });
+        const data = await response.json();
+        if (data.success) {
+          this.status = 'added';
+          this.showDropdown = true;
+          this.message = data.message;
+          this.showMessage = true;
+          setTimeout(() => this.showMessage = false, 3000);
+        } else {
+          this.message = data.message;
+          this.showMessage = true;
+        }
+      } catch {
+        this.message = 'Something went wrong. Try again.';
+        this.showMessage = true;
+      }
+    },
+
+    async updateStatus(newStatus) {
+      try {
+        const response = await fetch('{% url "update_book_status" book.id %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+          body: new URLSearchParams({ status: newStatus })
+        });
+        const data = await response.json();
+        if (data.success) {
+          this.message = data.message;
+          this.showMessage = true;
+          setTimeout(() => this.showMessage = false, 3000);
+        } else {
+          this.message = 'Failed to update.';
+          this.showMessage = true;
+        }
+      } catch {
+        this.message = 'Something went wrong.';
+        this.showMessage = true;
+      }
+    }
+  }"
+  class="w-100"
+>
+
+  <!-- Add to Library Button -->
+  <button 
+    x-show="!showDropdown"
+    @click="addToLibrary"
+    class="btn btn-primary w-100 rounded-pill"
+    x-transition
+  >
+    Add to Library
+  </button>
+
+  <!-- Status Dropdown -->
+  <div x-show="showDropdown" x-transition class="mt-2">
+    <select 
+      x-model="status"
+      @change="updateStatus(status)"
+      class="form-select rounded-pill"
+    >
+      {% for key, value in book.userbook_set.model.STATUS_CHOICES %}
+        <option value="{{ key }}">{{ value }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Notification -->
+  <div 
+    x-show="showMessage" 
+    x-transition 
+    class="alert alert-success mt-3 py-2 px-3 small shadow-sm"
+    x-text="message"
+  ></div>
+</div>
+{% else %}
+  <p class="text-center text-muted mt-2">Login to manage your library</p>
+{% endif %}

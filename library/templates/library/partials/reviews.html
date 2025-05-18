@@ -1,0 +1,66 @@
+{% if user_reviews %}
+  <section class="mt-4">
+    <h3>Your Reviews</h3>
+    {% for review in user_reviews %}
+      <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title mb-1">
+                {{ review.book.name }}
+              </h5>
+              <p class="text-muted mb-1" style="font-size: 0.9rem;">
+                by 
+                {% for author in review.book.authors.all %}
+                  {{ author.name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                  Unknown Author
+                {% endfor %}
+              </p>
+              <div class="text-warning" style="font-size: 0.85rem;">
+                {% for i in "12345" %}
+                  {% if forloop.counter <= review.rating %}
+                    <i class="fas fa-star"></i>
+                  {% else %}
+                    <i class="far fa-star"></i>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              
+
+          <p class="card-text review-text">
+            {{ review.text|default:"No review text" }}
+          </p>
+
+          <button class="btn btn-link p-0 see-toggle text-primary d-none">See more</button>
+
+          <small class="text-muted d-block mt-2">
+            Reviewed on {{ review.created_at|date:"F j, Y" }}
+          </small>
+        </div>
+      </div>
+    {% endfor %}
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const maxLength = 300;
+      const reviewTexts = document.querySelectorAll('.review-text');
+      reviewTexts.forEach((textElement, index) => {
+        const fullText = textElement.textContent.trim();
+        if (fullText.length > maxLength) {
+          const shortText = fullText.slice(0, maxLength) + '...';
+          const toggleBtn = textElement.nextElementSibling;
+
+          textElement.textContent = shortText;
+          toggleBtn.classList.remove('d-none');
+
+          let isExpanded = false;
+          toggleBtn.addEventListener('click', () => {
+            isExpanded = !isExpanded;
+            textElement.textContent = isExpanded ? fullText : shortText;
+            toggleBtn.textContent = isExpanded ? 'See less' : 'See more';
+          });
+        }
+      });
+    });
+  </script>
+{% endif %}

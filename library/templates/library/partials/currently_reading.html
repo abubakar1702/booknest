@@ -1,0 +1,24 @@
+<div class="card shadow-sm border" style="max-width: 13rem;">
+    <a href="{% url 'book_details' books.book.id %}">
+      {% if books.book.cover %}
+        <img src="{{ books.book.cover.url }}" alt="{{ books.book.name }}" class="card-img-top" style="height: 12rem; object-fit: contain;">
+      {% else %}
+        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 12rem;">
+          <span class="text-muted small">No cover</span>
+        </div>
+      {% endif %}
+    </a>
+    <div class="card-body p-2">
+      <h6 class="card-title text-truncate mb-1">{{ books.book.name }}</h6>
+      <p class="card-subtitle text-muted small mb-2 text-truncate">
+        {% for author in books.book.authors.all %}
+          {{ author.name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted">{{ books.created_at|date:"M d, Y" }}</small>
+        <span class="badge bg-primary-subtle text-primary">Reading</span>
+      </div>
+    </div>
+</div>
+  

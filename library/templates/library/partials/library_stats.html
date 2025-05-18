@@ -1,0 +1,13 @@
+{% block library_stats %}
+<div class="d-flex flex-wrap gap-3 mb-4">
+    <div class="p-3 border rounded bg-light">
+        <div class="text-muted small">Total Books</div>
+        <div class="fs-4 fw-bold">{{ total_books }}</div>
+    </div>
+    <div class="p-3 border rounded bg-light">
+        <div class="text-muted small">Already Read Books</div>
+        <div class="fs-4 fw-bold">{{ total_read_books }}</div>
+    </div>
+    <!-- Add more stat cards as needed -->
+</div>
+{% endblock %}

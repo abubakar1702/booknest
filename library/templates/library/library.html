@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<header class="mb-4">
+  <nav class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="libraryTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="my-library-tab" data-bs-toggle="tab" data-bs-target="#my-library" type="button" role="tab">
+          My Library
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="my-books-tab" data-bs-toggle="tab" data-bs-target="#all-books" type="button" role="tab">
+          My Books
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="lists-tab" data-bs-toggle="tab" data-bs-target="#lists" type="button" role="tab">
+          Lists
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+          Reviews
+        </button>
+      </li>
+    </ul>
+
+    <!-- Action Buttons -->
+    <div class="d-flex gap-2">
+      <button id="create-list-btn" class="btn btn-primary">
+        Create New List
+      </button>
+      <button id="add-books-btn" class="btn btn-outline-secondary">
+        Add Books
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="tab-content" id="libraryTabsContent">
+
+    <!-- My Library -->
+    <div class="tab-pane fade show active" id="my-library" role="tabpanel" aria-labelledby="my-library-tab">
+      {% include "library/partials/library_header.html" %}
+      {% include "library/partials/library_stats.html" %}
+      {% include "library/partials/my_library.html" %}
+    </div>
+
+    <!-- My Books -->
+    <div class="tab-pane fade" id="all-books" role="tabpanel" aria-labelledby="my-books-tab">
+      {% include "library/partials/my_books.html" %}
+    </div>
+
+    <!-- Lists -->
+    <div class="tab-pane fade" id="lists" role="tabpanel" aria-labelledby="lists-tab">
+      {% comment %} {% include "library/partials/list_form.html" %} {% endcomment %}
+      {% include "library/partials/lists.html" %}
+    </div>
+
+    <!-- Reviews -->
+    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+      {% include "library/partials/reviews.html" %}
+    </div>
+  </div>
+</main>
+
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% if user.is_authenticated and not user_review %}
+  <form method="POST" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Your Rating:</label>
+      <div class="star-rating" role="radiogroup" aria-label="Star rating">
+        {% for i in "54321" %}
+          <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+          <label for="star{{ i }}" title="{{ i }} stars">★</label>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="mb-3">
+      <textarea name="text" rows="4" maxlength="500" placeholder="Write your review... (optional)" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+  </form>
+   {% elif not user.is_authenticated %}
+     <p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'signup' %}">Sign up</a> to write a review.</p>
+   {% else %}
+     <p class="text-success text-center m-4">You have already reviewed this book.</p>
+   {% endif %}
+
+<style>
+  .star-rating {
+    font-size: 1.5rem;
+    direction: rtl;
+    display: inline-flex;
+    gap: 0.25rem;
+  }
+  .star-rating input[type="radio"] {
+    display: none;
+  }
+  .star-rating label {
+    color: #ddd;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+  .star-rating input[type="radio"]:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: #ffc107;
+  }
+</style>
